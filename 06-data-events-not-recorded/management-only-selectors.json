@@ -1,0 +1,8 @@
+[
+  {
+    "ReadWriteType": "All",
+    "IncludeManagementEvents": true,
+    "DataResources": [],
+    "ExcludeManagementEventSources": []
+  }
+]

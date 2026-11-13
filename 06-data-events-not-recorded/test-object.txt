@@ -1,0 +1,1 @@
+CloudTrail Lab 06 - data event troubleshooting

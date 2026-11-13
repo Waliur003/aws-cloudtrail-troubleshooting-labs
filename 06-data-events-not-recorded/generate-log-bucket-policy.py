@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+
+import json
+import os
+
+bucket = os.environ["LOG_BUCKET"]
+account = os.environ["ACCOUNT_ID"]
+trail = os.environ["TRAIL_ARN"]
+
+policy = {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "CloudTrailAclCheck",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "cloudtrail.amazonaws.com"
+            },
+            "Action": "s3:GetBucketAcl",
+            "Resource": f"arn:aws:s3:::{bucket}",
+            "Condition": {
+                "StringEquals": {
+                    "aws:SourceArn": trail
+                }
+            }
+        },
+        {
+            "Sid": "CloudTrailWrite",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "cloudtrail.amazonaws.com"
+            },
+            "Action": "s3:PutObject",
+            "Resource": (
+                f"arn:aws:s3:::{bucket}/AWSLogs/{account}/*"
+            ),
+            "Condition": {
+                "StringEquals": {
+                    "s3:x-amz-acl": "bucket-owner-full-control",
+                    "aws:SourceArn": trail
+                }
+            }
+        }
+    ]
+}
+
+with open("cloudtrail-log-bucket-policy.json", "w") as f:
+    json.dump(policy, f, indent=2)
+
+print("CloudTrail S3 log bucket policy generated")
