@@ -1,0 +1,24 @@
+python3 - <<'PY'
+import json
+import os
+
+account = os.environ["ACCOUNT_ID"]
+
+policy = {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "EnableAccountKeyAdministration",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": f"arn:aws:iam::{account}:root"
+            },
+            "Action": "kms:*",
+            "Resource": "*"
+        }
+    ]
+}
+
+with open("kms-admin-policy.json", "w") as f:
+    json.dump(policy, f, indent=2)
+PY
